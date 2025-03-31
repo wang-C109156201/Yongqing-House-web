@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式場景探索</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="map-container">
+            <div class="map" id="map">
+                <!-- 場景將通過JavaScript動態添加 -->
+            </div>
+        </div>
+        <div class="dialog-container" id="dialogContainer">
+            <div class="dialog-content">
+                <div class="npc-info">
+                    <img src="" alt="NPC" id="npcImage" class="npc-image">
+                    <h3 id="npcName"></h3>
+                </div>
+                <div class="dialog-text" id="dialogText"></div>
+                <div class="dialog-options" id="dialogOptions"></div>
+            </div>
+        </div>
+        <div class="personality-analysis" id="personalityAnalysis">
+            <h2>個性分析</h2>
+            <div id="analysisContent"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
