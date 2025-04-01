@@ -8,10 +8,17 @@ const scenes = [
             image: 'https://placekitten.com/200/200',
             dialogues: [
                 {
-                    text: '下個月我們有大促活動，大家能否加班撐一下？',
+                    text: '面對突發加班，你會？',
                     options: [
-                        { text: '快答：我可以！為目標全力衝刺。', personality: { efficiency: 1, ambition: 1 } },
-                        { text: '緩答：我願意配合，但希望工時不要影響健康。', personality: { health: 1, balance: 1 } }
+                        { text: '理性評估是否有餘力', personality: { elephant: 1 } },
+                        { text: '直接答應，使命必達', personality: { dragon: 1 } }
+                    ]
+                },
+                {
+                    text: '團隊出錯，你會？',
+                    options: [
+                        { text: '誠實說明並幫忙修正', personality: { peacock: 1 } },
+                        { text: '用策略解法協調雙方關係', personality: { parrot: 1 } }
                     ]
                 }
             ]
@@ -25,10 +32,17 @@ const scenes = [
             image: 'https://placekitten.com/201/201',
             dialogues: [
                 {
-                    text: '聽說別的公司會隱瞞成交細節賺差價？',
+                    text: '聽見不誠實案例？',
                     options: [
-                        { text: '默默聽，不發表意見。', personality: { caution: 1, diplomacy: 1 } },
-                        { text: '直接說：我認為應該誠實，保障消費者權益。', personality: { integrity: 1, courage: 1 } }
+                        { text: '堅決表態反對不誠實作法', personality: { peacock: 1 } },
+                        { text: '換個角度看，靈活應變', personality: { parrot: 1 } }
+                    ]
+                },
+                {
+                    text: '公司文化你最在意？',
+                    options: [
+                        { text: '公開透明、不官腔', personality: { peacock: 1 } },
+                        { text: '節奏快、有挑戰才有趣', personality: { dragon: 1 } }
                     ]
                 }
             ]
@@ -42,10 +56,17 @@ const scenes = [
             image: 'https://placekitten.com/202/202',
             dialogues: [
                 {
-                    text: '你希望未來的薪資制度是？',
+                    text: '選擇穩定 vs 高挑戰？',
                     options: [
-                        { text: '高抽成、挑戰自我！', personality: { ambition: 1, risk: 1 } },
-                        { text: '穩定保障型，保障5萬x12個月。', personality: { stability: 1, security: 1 } }
+                        { text: '每月穩定5萬保障', personality: { elephant: 1 } },
+                        { text: '願意挑戰高抽成無保障', personality: { dragon: 1 } }
+                    ]
+                },
+                {
+                    text: '面對升遷機會你會？',
+                    options: [
+                        { text: '衡量長期發展與生活平衡再決定', personality: { elephant: 1 } },
+                        { text: '積極爭取、快速成長', personality: { dragon: 1 } }
                     ]
                 }
             ]
@@ -59,10 +80,17 @@ const scenes = [
             image: 'https://placekitten.com/203/203',
             dialogues: [
                 {
-                    text: '這裡是不是有瑕疵啊？',
+                    text: '客戶問房子缺點？',
                     options: [
-                        { text: '輕描淡寫，轉移話題。', personality: { diplomacy: 1, caution: 1 } },
-                        { text: '誠實告知房子的優缺點，並協助提出解決方案。', personality: { integrity: 1, problem_solving: 1 } }
+                        { text: '誠實說明讓他自己決定', personality: { peacock: 1 } },
+                        { text: '強調優點並設法轉移焦點', personality: { parrot: 1 } }
+                    ]
+                },
+                {
+                    text: '客戶態度強硬但不合理？',
+                    options: [
+                        { text: '溝通協調，用策略安撫', personality: { parrot: 1 } },
+                        { text: '堅持原則，理性說明', personality: { elephant: 1 } }
                     ]
                 }
             ]
@@ -76,10 +104,17 @@ const scenes = [
             image: 'https://placekitten.com/204/204',
             dialogues: [
                 {
-                    text: '低價搶下物件，但明知價格過低不合理。',
+                    text: '客戶問是否能壓價到底？',
                     options: [
-                        { text: '迎合客戶意願，嘗試壓價到底。', personality: { ambition: 1, risk: 1 } },
-                        { text: '說明行情與風險，協助客戶理性判斷。', personality: { integrity: 1, responsibility: 1 } }
+                        { text: '如實說行情', personality: { peacock: 1 } },
+                        { text: '試著談看看，但不保證', personality: { parrot: 1 } }
+                    ]
+                },
+                {
+                    text: '客戶急於簽約未看屋，你會？',
+                    options: [
+                        { text: '堅持流程，保障客戶權益', personality: { elephant: 1 } },
+                        { text: '尊重客戶決定、盡快成交', personality: { dragon: 1 } }
                     ]
                 }
             ]
@@ -89,19 +124,10 @@ const scenes = [
 
 // 用戶個性數據
 let userPersonality = {
-    efficiency: 0,
-    ambition: 0,
-    health: 0,
-    balance: 0,
-    caution: 0,
-    diplomacy: 0,
-    integrity: 0,
-    courage: 0,
-    stability: 0,
-    security: 0,
-    risk: 0,
-    problem_solving: 0,
-    responsibility: 0
+    peacock: 0,  // 🦚
+    elephant: 0, // 🐘
+    parrot: 0,   // 🦜
+    dragon: 0    // 🐉
 };
 
 // 已訪問的場景
@@ -125,6 +151,9 @@ let interactionPoints = [];
 let currentDialogOptions = [];
 let selectedOptionIndex = 0;
 
+// 當前對話索引
+let currentDialogIndex = 0;
+
 // 檢查兩個互動點是否重疊
 function checkOverlap(point1, point2) {
     const distance = Math.sqrt(
@@ -132,6 +161,40 @@ function checkOverlap(point1, point2) {
         Math.pow(point1.y - point2.y, 2)
     );
     return distance < 250; // 增加互動點之間的距離到250像素
+}
+
+// 檢查點是否與玩家位置重疊
+function checkPlayerOverlap(point) {
+    const distance = Math.sqrt(
+        Math.pow(playerPosition.x - point.x, 2) + 
+        Math.pow(playerPosition.y - point.y, 2)
+    );
+    return distance < 150; // 與玩家保持至少150像素的距離
+}
+
+// 檢查是否接觸到互動點
+function checkInteractionPoints() {
+    const player = document.querySelector('.player');
+    const playerRect = player.getBoundingClientRect();
+    
+    interactionPoints.forEach(point => {
+        const pointElement = document.querySelector(`.interaction-point[data-scene-id="${point.sceneId}"]`);
+        if (!pointElement) return;
+        
+        const pointRect = pointElement.getBoundingClientRect();
+        
+        // 檢查兩個元素是否碰撞
+        const isColliding = !(
+            playerRect.right < pointRect.left || 
+            playerRect.left > pointRect.right || 
+            playerRect.bottom < pointRect.top || 
+            playerRect.top > pointRect.bottom
+        );
+        
+        if (isColliding && !visitedScenes.has(point.sceneId)) {
+            handleInteraction(point);
+        }
+    });
 }
 
 // 重置遊戲狀態
@@ -145,23 +208,15 @@ function resetGame() {
 
     // 重置個性數據
     userPersonality = {
-        efficiency: 0,
-        ambition: 0,
-        health: 0,
-        balance: 0,
-        caution: 0,
-        diplomacy: 0,
-        integrity: 0,
-        courage: 0,
-        stability: 0,
-        security: 0,
-        risk: 0,
-        problem_solving: 0,
-        responsibility: 0
+        peacock: 0,
+        elephant: 0,
+        parrot: 0,
+        dragon: 0
     };
 
     // 重置已訪問場景
     visitedScenes = new Set();
+    currentDialogIndex = 0;
 
     // 重置UI
     const player = document.querySelector('.player');
@@ -176,13 +231,22 @@ function resetGame() {
     const map = document.getElementById('map');
     const existingPoints = document.querySelectorAll('.interaction-point');
     existingPoints.forEach(point => point.remove());
-    generateInteractionPoints();
+    
+    // 確保互動點不會與玩家重疊且數量正確
+    let validPoints = false;
+    while (!validPoints) {
+        generateInteractionPoints();
+        validPoints = interactionPoints.length === scenes.length && 
+                     !interactionPoints.some(point => checkPlayerOverlap(point));
+    }
+    
     interactionPoints.forEach(point => {
         const interactionPoint = document.createElement('div');
         interactionPoint.className = 'interaction-point';
         interactionPoint.style.left = `${point.x}px`;
         interactionPoint.style.top = `${point.y}px`;
         interactionPoint.textContent = point.name;
+        interactionPoint.setAttribute('data-scene-id', point.sceneId);
         map.appendChild(interactionPoint);
     });
 }
@@ -191,8 +255,9 @@ function resetGame() {
 function generateInteractionPoints() {
     interactionPoints = [];
     const maxAttempts = 200; // 增加最大嘗試次數
+    let generatedCount = 0;
     
-    for (let i = 0; i < scenes.length; i++) {
+    while (generatedCount < scenes.length) {
         let attempts = 0;
         let validPosition = false;
         let newPoint;
@@ -201,17 +266,23 @@ function generateInteractionPoints() {
             newPoint = {
                 x: Math.random() * (800 - 150) + 75, // 調整生成範圍，避免太靠近邊緣
                 y: Math.random() * (600 - 150) + 75,
-                sceneId: scenes[i].id,
-                name: scenes[i].name
+                sceneId: scenes[generatedCount].id,
+                name: scenes[generatedCount].name
             };
             
-            // 檢查是否與現有的互動點重疊
-            validPosition = !interactionPoints.some(point => checkOverlap(point, newPoint));
+            // 檢查是否與現有的互動點重疊，以及是否與玩家位置重疊
+            validPosition = !interactionPoints.some(point => checkOverlap(point, newPoint)) && 
+                          !checkPlayerOverlap(newPoint);
             attempts++;
         }
         
         if (validPosition) {
             interactionPoints.push(newPoint);
+            generatedCount++;
+        } else {
+            // 如果無法生成有效的點，重新開始整個生成過程
+            interactionPoints = [];
+            generatedCount = 0;
         }
     }
 }
@@ -237,6 +308,7 @@ function initializeGame() {
         interactionPoint.style.left = `${point.x}px`;
         interactionPoint.style.top = `${point.y}px`;
         interactionPoint.textContent = point.name;
+        interactionPoint.setAttribute('data-scene-id', point.sceneId); // 添加場景ID屬性
         map.appendChild(interactionPoint);
     });
 
@@ -339,27 +411,12 @@ function updatePlayerDirection(dx, dy) {
     }
 }
 
-// 檢查是否接觸到互動點
-function checkInteractionPoints() {
-    interactionPoints.forEach(point => {
-        const distance = Math.sqrt(
-            Math.pow(playerPosition.x - point.x, 2) + 
-            Math.pow(playerPosition.y - point.y, 2)
-        );
-        
-        if (distance < 100 && !visitedScenes.has(point.sceneId)) {
-            handleInteraction(point);
-        }
-    });
-}
-
 // 處理互動
 function handleInteraction(point) {
     const scene = scenes.find(s => s.id === point.sceneId);
     if (scene) {
         visitedScenes.add(scene.id);
         showDialog(scene.npc);
-        updatePersonalityAnalysis();
     }
 }
 
@@ -374,20 +431,29 @@ function showDialog(npc) {
     dialogContainer.style.display = 'block';
     npcImage.src = npc.image;
     npcName.textContent = npc.name;
-    dialogText.textContent = npc.dialogues[0].text;
+    dialogText.textContent = npc.dialogues[currentDialogIndex].text;
 
     dialogOptions.innerHTML = '';
     currentDialogOptions = [];
     selectedOptionIndex = 0;
 
-    npc.dialogues[0].options.forEach(option => {
+    npc.dialogues[currentDialogIndex].options.forEach(option => {
         const button = document.createElement('button');
         button.className = 'dialog-option';
         button.textContent = option.text;
         button.addEventListener('click', () => {
             updatePersonality(option.personality);
-            dialogContainer.style.display = 'none';
-            checkGameCompletion();
+            currentDialogIndex++;
+            
+            if (currentDialogIndex < npc.dialogues.length) {
+                // 還有下一題
+                showDialog(npc);
+            } else {
+                // 完成所有題目
+                dialogContainer.style.display = 'none';
+                currentDialogIndex = 0;
+                checkGameCompletion();
+            }
         });
         dialogOptions.appendChild(button);
         currentDialogOptions.push(button);
@@ -419,60 +485,36 @@ function showPersonalityAnalysis() {
     
     // 分析主要特質
     const traits = Object.entries(userPersonality)
-        .filter(([_, value]) => value !== 0)
         .sort(([_, a], [__, b]) => b - a);
 
     if (traits.length > 0) {
+        const personalityEmojis = {
+            peacock: '🦚',
+            elephant: '🐘',
+            parrot: '🦜',
+            dragon: '🐉'
+        };
+        
+        const personalityNames = {
+            peacock: '孔雀型',
+            elephant: '大象型',
+            parrot: '鸚鵡型',
+            dragon: '龍型'
+        };
+
         traits.forEach(([trait, value]) => {
-            const traitName = getTraitName(trait);
-            analysis += `${traitName}: ${value > 0 ? '傾向' : '較少'}${getTraitDescription(trait)}<br>`;
+            analysis += `${personalityEmojis[trait]} ${personalityNames[trait]}: ${value}分<br>`;
         });
+
+        // 顯示主要人格
+        const mainPersonality = traits[0][0];
+        analysis += `<br>你的主要人格是：${personalityEmojis[mainPersonality]} ${personalityNames[mainPersonality]}`;
     } else {
         analysis += '你還沒有與任何NPC互動，無法進行個性分析。';
     }
 
     analysisContent.innerHTML = analysis + '<br><button class="restart-button" onclick="resetGame()">再玩一次</button>';
     analysisContainer.style.display = 'block';
-}
-
-// 獲取特質名稱
-function getTraitName(trait) {
-    const traitNames = {
-        efficiency: '效率導向',
-        ambition: '進取心',
-        health: '健康意識',
-        balance: '工作平衡',
-        caution: '謹慎',
-        diplomacy: '外交手腕',
-        integrity: '誠信',
-        courage: '勇氣',
-        stability: '穩定性',
-        security: '安全感',
-        risk: '風險承受度',
-        problem_solving: '問題解決能力',
-        responsibility: '責任感'
-    };
-    return traitNames[trait] || trait;
-}
-
-// 獲取特質描述
-function getTraitDescription(trait) {
-    const descriptions = {
-        efficiency: '注重效率',
-        ambition: '富有進取心',
-        health: '重視健康',
-        balance: '注重工作平衡',
-        caution: '行事謹慎',
-        diplomacy: '善於溝通',
-        integrity: '誠實正直',
-        courage: '勇於表達',
-        stability: '追求穩定',
-        security: '重視保障',
-        risk: '願意承擔風險',
-        problem_solving: '善於解決問題',
-        responsibility: '富有責任感'
-    };
-    return descriptions[trait] || '';
 }
 
 // 初始化應用
