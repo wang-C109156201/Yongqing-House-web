@@ -1,8 +1,9 @@
 // 場景數據
 const scenes = [
     {
-        id: 'meeting',
+        id: 'conference',
         name: '會議室',
+        interactionImage: './image/conference.png',
         npc: {
             name: '主管',
             image: 'https://placekitten.com/200/200',
@@ -27,6 +28,7 @@ const scenes = [
     {
         id: 'breakroom',
         name: '茶水間',
+        interactionImage: './image/breakroom.png',
         npc: {
             name: '同事',
             image: 'https://placekitten.com/201/201',
@@ -49,8 +51,9 @@ const scenes = [
         }
     },
     {
-        id: 'boss',
+        id: 'office',
         name: '老闆辦公室',
+        interactionImage: './image/office.png',
         npc: {
             name: '老闆',
             image: 'https://placekitten.com/202/202',
@@ -73,8 +76,9 @@ const scenes = [
         }
     },
     {
-        id: 'reception',
+        id: 'welcome',
         name: '業務接待區',
+        interactionImage: './image/welcome.png',
         npc: {
             name: '客戶',
             image: 'https://placekitten.com/203/203',
@@ -97,8 +101,9 @@ const scenes = [
         }
     },
     {
-        id: 'outdoor',
+        id: 'home',
         name: '戶外看屋現場',
+        interactionImage: './image/home.png',
         npc: {
             name: '客戶',
             image: 'https://placekitten.com/204/204',
@@ -247,6 +252,8 @@ function resetGame() {
         interactionPoint.style.top = `${point.y}px`;
         interactionPoint.textContent = point.name;
         interactionPoint.setAttribute('data-scene-id', point.sceneId);
+        interactionPoint.setAttribute('title', point.name);
+        interactionPoint.style.backgroundImage = `url('${point.image}')`;
         map.appendChild(interactionPoint);
     });
 }
@@ -254,7 +261,7 @@ function resetGame() {
 // 生成隨機互動點
 function generateInteractionPoints() {
     interactionPoints = [];
-    const maxAttempts = 200; // 增加最大嘗試次數
+    const maxAttempts = 200;
     let generatedCount = 0;
     
     while (generatedCount < scenes.length) {
@@ -264,13 +271,13 @@ function generateInteractionPoints() {
         
         while (!validPosition && attempts < maxAttempts) {
             newPoint = {
-                x: Math.random() * (800 - 150) + 75, // 調整生成範圍，避免太靠近邊緣
+                x: Math.random() * (800 - 150) + 75,
                 y: Math.random() * (600 - 150) + 75,
                 sceneId: scenes[generatedCount].id,
-                name: scenes[generatedCount].name
+                name: scenes[generatedCount].name,
+                image: scenes[generatedCount].interactionImage
             };
             
-            // 檢查是否與現有的互動點重疊，以及是否與玩家位置重疊
             validPosition = !interactionPoints.some(point => checkOverlap(point, newPoint)) && 
                           !checkPlayerOverlap(newPoint);
             attempts++;
@@ -280,7 +287,6 @@ function generateInteractionPoints() {
             interactionPoints.push(newPoint);
             generatedCount++;
         } else {
-            // 如果無法生成有效的點，重新開始整個生成過程
             interactionPoints = [];
             generatedCount = 0;
         }
@@ -293,7 +299,7 @@ function initializeGame() {
     
     // 創建玩家
     const player = document.createElement('div');
-    player.className = 'player right'; // 設置初始方向
+    player.className = 'player right';
     player.style.left = `${playerPosition.x}px`;
     player.style.top = `${playerPosition.y}px`;
     map.appendChild(player);
@@ -308,7 +314,9 @@ function initializeGame() {
         interactionPoint.style.left = `${point.x}px`;
         interactionPoint.style.top = `${point.y}px`;
         interactionPoint.textContent = point.name;
-        interactionPoint.setAttribute('data-scene-id', point.sceneId); // 添加場景ID屬性
+        interactionPoint.setAttribute('data-scene-id', point.sceneId);
+        interactionPoint.setAttribute('title', point.name);
+        interactionPoint.style.backgroundImage = `url('${point.image}')`;
         map.appendChild(interactionPoint);
     });
 
