@@ -7,7 +7,20 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div class="welcome-screen" id="welcomeScreen">
+        <img src="./image/welcome-image.png" alt="歡迎圖" class="welcome-image">
+        <button class="start-button" onclick="showIntroduction()">開始遊戲</button>
+    </div>
+    <div class="introduction-screen" id="introductionScreen" style="display: none;">
+        <h2>前導介紹</h2>
+        <div class="introduction-content">
+            <div class="introduction-text">
+                <p>前導介紹前導介紹前導介紹前導介紹前導介紹前導介紹.....<br>按下“上”鍵以開始遊戲</p>
+            </div>
+            <img src="./image/player.png" alt="玩家" class="introduction-player">
+        </div>
+    </div>
+    <div class="container" id="gameContainer" style="display: none;">
         <div class="map-container">
             <div class="map" id="map">
                 <!-- 場景將通過JavaScript動態添加 -->

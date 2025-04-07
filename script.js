@@ -159,6 +159,27 @@ let selectedOptionIndex = 0;
 // 當前對話索引
 let currentDialogIndex = 0;
 
+function showIntroduction() {
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'flex';
+    document.getElementById('introductionScreen').style.display = 'flex';
+
+    // 添加鍵盤事件監聽器，只在前導介紹時有效
+    const handleKeyPress = function(e) {
+        if (e.key === 'ArrowUp') {
+            startGame();
+            document.removeEventListener('keydown', handleKeyPress); // 移除事件監聽器
+        }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+}
+
+function startGame() {
+    document.getElementById('introductionScreen').style.display = 'none';
+    initializeGame(); // 初始化遊戲
+}
+
 // 檢查兩個互動點是否重疊
 function checkOverlap(point1, point2) {
     const distance = Math.sqrt(
@@ -388,9 +409,6 @@ function movePlayer(dx, dy) {
         player.style.left = `${playerPosition.x}px`;
         player.style.top = `${playerPosition.y}px`;
         
-        // 更新玩家方向
-        updatePlayerDirection(dx, dy);
-        
         // 檢查是否接觸到互動點
         checkInteractionPoints();
     }
@@ -398,25 +416,7 @@ function movePlayer(dx, dy) {
 
 // 更新玩家方向
 function updatePlayerDirection(dx, dy) {
-    const player = document.querySelector('.player');
-    
-    // 移除所有方向類
-    player.classList.remove('up', 'down', 'left', 'right');
-    
-    // 根據移動方向添加對應的類
-    if (dx > 0) {
-        player.classList.add('right');
-        playerDirection = 'right';
-    } else if (dx < 0) {
-        player.classList.add('left');
-        playerDirection = 'left';
-    } else if (dy > 0) {
-        player.classList.add('down');
-        playerDirection = 'down';
-    } else if (dy < 0) {
-        player.classList.add('up');
-        playerDirection = 'up';
-    }
+    // 不再需要更新玩家方向
 }
 
 // 處理互動
@@ -524,6 +524,3 @@ function showPersonalityAnalysis() {
     analysisContent.innerHTML = analysis + '<br><button class="restart-button" onclick="resetGame()">再玩一次</button>';
     analysisContainer.style.display = 'block';
 }
-
-// 初始化應用
-initializeGame(); 

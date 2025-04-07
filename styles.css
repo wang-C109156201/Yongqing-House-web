@@ -18,6 +18,41 @@ body {
     gap: 20px;
 }
 
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.welcome-image {
+    max-width: 80%;
+    height: 80%;
+    margin-bottom: 20px;
+}
+
+.start-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.start-button:hover {
+    background-color: #0056b3;
+}
+
 .map-container {
     flex: 1;
     background-color: white;
@@ -45,22 +80,6 @@ body {
     position: absolute;
     z-index: 100;
     transition: transform 0.1s;
-}
-
-.player.up {
-    transform: rotate(-90deg);
-}
-
-.player.down {
-    transform: rotate(90deg);
-}
-
-.player.left {
-    transform: rotate(180deg);
-}
-
-.player.right {
-    transform: rotate(0deg);
 }
 
 .interaction-point {
@@ -223,4 +242,42 @@ body {
 
 .restart-button:hover {
     background-color: #0056b3;
+}
+
+.introduction-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.introduction-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 800px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.introduction-text {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.introduction-player {
+    width: 150px;
+    height: auto;
+    margin-left: 20px;
 } 
