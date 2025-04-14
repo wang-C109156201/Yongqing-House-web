@@ -111,7 +111,7 @@ const scenes = [
                 {
                     text: '客戶問是否能壓價到底？',
                     options: [
-                        { text: '如實說行情', personality: { peacock: 1 } },
+                        { text: '如實說明讓他自己決定', personality: { peacock: 1 } },
                         { text: '試著談看看，但不保證', personality: { parrot: 1 } }
                     ]
                 },
@@ -159,20 +159,13 @@ let selectedOptionIndex = 0;
 // 當前對話索引
 let currentDialogIndex = 0;
 
+// 當前場景ID
+let currentSceneId;
+
 function showIntroduction() {
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('gameContainer').style.display = 'flex';
     document.getElementById('introductionScreen').style.display = 'flex';
-
-    // 添加鍵盤事件監聽器，只在前導介紹時有效
-    const handleKeyPress = function(e) {
-        if (e.key === 'ArrowUp') {
-            startGame();
-            document.removeEventListener('keydown', handleKeyPress); // 移除事件監聽器
-        }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
 }
 
 function startGame() {
@@ -316,41 +309,68 @@ function generateInteractionPoints() {
 
 // 初始化遊戲
 function initializeGame() {
-    const map = document.getElementById('map');
+    // 添加鍵盤事件監聽
+    document.addEventListener('keydown', handleKeyPress);
+    
+    // 獲取地圖容器
+    const map = document.querySelector('.map');
+    
+    // 清空現有內容
+    map.innerHTML = '';
+    
+    // 創建道路
+    const road = document.createElement('div');
+    road.className = 'road';
+    map.appendChild(road);
     
     // 創建玩家
     const player = document.createElement('div');
-    player.className = 'player right';
-    player.style.left = `${playerPosition.x}px`;
-    player.style.top = `${playerPosition.y}px`;
+    player.className = 'player';
+    player.style.left = '0';
+    player.style.bottom = '100px';
     map.appendChild(player);
-
-    // 生成互動點
-    generateInteractionPoints();
-
-    // 創建互動點
-    interactionPoints.forEach(point => {
+    
+    // 創建房子容器
+    const housesContainer = document.createElement('div');
+    housesContainer.className = 'houses-container';
+    map.appendChild(housesContainer);
+    
+    // 創建五個互動點（房子）
+    scenes.forEach((scene, index) => {
         const interactionPoint = document.createElement('div');
         interactionPoint.className = 'interaction-point';
-        interactionPoint.style.left = `${point.x}px`;
-        interactionPoint.style.top = `${point.y}px`;
-        interactionPoint.textContent = point.name;
-        interactionPoint.setAttribute('data-scene-id', point.sceneId);
-        interactionPoint.setAttribute('title', point.name);
-        interactionPoint.style.backgroundImage = `url('${point.image}')`;
-        map.appendChild(interactionPoint);
+        interactionPoint.style.backgroundImage = `url('${scene.interactionImage}')`;
+        interactionPoint.setAttribute('data-scene-id', scene.id);
+        
+        // 創建互動提示
+        const hint = document.createElement('div');
+        hint.className = 'interaction-hint';
+        hint.textContent = '按X開始互動';
+        interactionPoint.appendChild(hint);
+        
+        housesContainer.appendChild(interactionPoint);
     });
-
-    // 添加鍵盤控制
-    document.addEventListener('keydown', handleKeyPress);
+    
+    // 設置初始場景ID
+    currentSceneId = scenes[0].id;
+    
+    // 重置玩家位置
+    playerPosition.x = 0;
+    const playerElement = document.querySelector('.player');
+    playerElement.style.left = `${playerPosition.x}px`;
+    
+    // 重置已訪問場景
+    visitedScenes = new Set();
+    currentDialogIndex = 0;
 }
 
 // 處理按鍵事件
 function handleKeyPress(e) {
     const dialogContainer = document.getElementById('dialogContainer');
+    const player = document.querySelector('.player');
     
+    // 如果對話框是開啟的，處理選項選擇
     if (dialogContainer.style.display === 'block') {
-        // 對話框開啟時的按鍵處理
         switch(e.key) {
             case 'ArrowUp':
                 e.preventDefault();
@@ -370,47 +390,69 @@ function handleKeyPress(e) {
                 break;
         }
     } else {
-        // 移動控制
+        // 如果對話框是關閉的，處理玩家移動
         switch(e.key) {
-            case 'ArrowUp':
-                movePlayer(0, -MOVEMENT_SPEED);
-                break;
-            case 'ArrowDown':
-                movePlayer(0, MOVEMENT_SPEED);
-                break;
             case 'ArrowLeft':
-                movePlayer(-MOVEMENT_SPEED, 0);
+                movePlayer(-MOVEMENT_SPEED);
+                if (player) player.style.transform = 'scaleX(-1)';
                 break;
             case 'ArrowRight':
-                movePlayer(MOVEMENT_SPEED, 0);
+                movePlayer(MOVEMENT_SPEED);
+                if (player) player.style.transform = 'scaleX(1)';
+                break;
+            case 'x':
+                if (isAtInteractionPoint()) {
+                    const scene = scenes[0];
+                    if (scene && !visitedScenes.has(scene.id)) {
+                        showDialog(scene.npc);
+                    }
+                }
                 break;
         }
     }
 }
 
-// 更新選中的對話選項
+// 更新選中的選項
 function updateSelectedOption() {
     const options = document.querySelectorAll('.dialog-option');
     options.forEach((option, index) => {
-        option.classList.toggle('selected', index === selectedOptionIndex);
+        if (index === selectedOptionIndex) {
+            option.classList.add('selected');
+        } else {
+            option.classList.remove('selected');
+        }
     });
 }
 
 // 移動玩家
-function movePlayer(dx, dy) {
+function movePlayer(dx) {
     const player = document.querySelector('.player');
+    if (!player) return;
+
     const newX = playerPosition.x + dx;
-    const newY = playerPosition.y + dy;
-    
+    const maxX = window.innerWidth * 0.15; // 限制在左側15%的範圍內
+
     // 檢查邊界
-    if (newX >= 0 && newX <= 800 && newY >= 0 && newY <= 600) {
+    if (newX >= 0 && newX <= maxX) {
         playerPosition.x = newX;
-        playerPosition.y = newY;
         player.style.left = `${playerPosition.x}px`;
-        player.style.top = `${playerPosition.y}px`;
         
-        // 檢查是否接觸到互動點
-        checkInteractionPoints();
+        // 檢查是否碰到房子
+        if (isAtInteractionPoint()) {
+            const currentPoint = document.querySelector(`.interaction-point[data-scene-id="${currentSceneId}"]`);
+            if (currentPoint) {
+                const hint = currentPoint.querySelector('.interaction-hint');
+                if (hint) {
+                    hint.style.display = 'block';
+                }
+            }
+        } else {
+            // 如果沒有碰到房子，隱藏所有提示
+            const hints = document.querySelectorAll('.interaction-hint');
+            hints.forEach(hint => {
+                hint.style.display = 'none';
+            });
+        }
     }
 }
 
@@ -422,7 +464,7 @@ function updatePlayerDirection(dx, dy) {
 // 處理互動
 function handleInteraction(point) {
     const scene = scenes.find(s => s.id === point.sceneId);
-    if (scene) {
+    if (scene && !visitedScenes.has(scene.id)) {
         visitedScenes.add(scene.id);
         showDialog(scene.npc);
     }
@@ -445,30 +487,51 @@ function showDialog(npc) {
     currentDialogOptions = [];
     selectedOptionIndex = 0;
 
-    npc.dialogues[currentDialogIndex].options.forEach(option => {
+    npc.dialogues[currentDialogIndex].options.forEach((option, index) => {
         const button = document.createElement('button');
         button.className = 'dialog-option';
+        if (index === 0) button.classList.add('selected');
         button.textContent = option.text;
         button.addEventListener('click', () => {
             updatePersonality(option.personality);
             currentDialogIndex++;
             
             if (currentDialogIndex < npc.dialogues.length) {
-                // 還有下一題
                 showDialog(npc);
             } else {
-                // 完成所有題目
                 dialogContainer.style.display = 'none';
                 currentDialogIndex = 0;
+                visitedScenes.add(currentSceneId);
                 checkGameCompletion();
             }
         });
         dialogOptions.appendChild(button);
         currentDialogOptions.push(button);
     });
+}
 
-    // 設置第一個選項為選中狀態
-    updateSelectedOption();
+// 移動到下一個場景
+function moveToNextScene() {
+    const map = document.querySelector('.map');
+    const currentSceneIndex = scenes.findIndex(scene => scene.id === currentSceneId);
+    const nextSceneIndex = (currentSceneIndex + 1) % scenes.length;
+    const nextScene = scenes[nextSceneIndex];
+    
+    // 更新當前場景ID
+    currentSceneId = nextScene.id;
+    
+    // 更新互動點
+    const interactionPoint = document.querySelector('.interaction-point');
+    interactionPoint.style.backgroundImage = `url('${nextScene.interactionImage}')`;
+    
+    // 移動地圖到新場景位置
+    const sceneWidth = window.innerWidth;
+    map.style.transform = `translateX(-${nextSceneIndex * sceneWidth}px)`;
+    
+    // 重置玩家位置到新場景的起始位置
+    playerPosition.x = 100;
+    const player = document.querySelector('.player');
+    player.style.left = `${playerPosition.x}px`;
 }
 
 // 更新個性數據
@@ -523,4 +586,29 @@ function showPersonalityAnalysis() {
 
     analysisContent.innerHTML = analysis + '<br><button class="restart-button" onclick="resetGame()">再玩一次</button>';
     analysisContainer.style.display = 'block';
+}
+
+function isAtInteractionPoint() {
+    const player = document.querySelector('.player');
+    if (!player) return false;
+
+    const playerRect = player.getBoundingClientRect();
+    const interactionPoints = document.querySelectorAll('.interaction-point');
+    
+    for (const point of interactionPoints) {
+        const pointRect = point.getBoundingClientRect();
+        // 檢查玩家是否碰到房子
+        const isColliding = !(
+            playerRect.right < pointRect.left || 
+            playerRect.left > pointRect.right || 
+            playerRect.bottom < pointRect.top || 
+            playerRect.top > pointRect.bottom
+        );
+        
+        if (isColliding && !visitedScenes.has(point.getAttribute('data-scene-id'))) {
+            currentSceneId = point.getAttribute('data-scene-id');
+            return true;
+        }
+    }
+    return false;
 }

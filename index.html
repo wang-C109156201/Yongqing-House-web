@@ -8,22 +8,27 @@
 </head>
 <body>
     <div class="welcome-screen" id="welcomeScreen">
-        <img src="./image/welcome-image.png" alt="歡迎圖" class="welcome-image">
+        <img src="./image/homepage.png" alt="歡迎圖" class="welcome-image">
         <button class="start-button" onclick="showIntroduction()">開始遊戲</button>
     </div>
     <div class="introduction-screen" id="introductionScreen" style="display: none;">
         <h2>前導介紹</h2>
         <div class="introduction-content">
             <div class="introduction-text">
-                <p>前導介紹前導介紹前導介紹前導介紹前導介紹前導介紹.....<br>按下“上”鍵以開始遊戲</p>
+                <p>歡迎來到永慶宇宙特派駐地——職場魔獸訓練所！你即將進入一個平行職場世界，在這裡，誠實是一種魔法，選擇會形塑你內心的職場靈獸人格。五個場景、十道選擇題，看似簡單，其實處處藏著關鍵線索。傳說中，有四種靈獸人格正在尋找牠們的主人——</p>
+                <p>在接下來你可以用鍵盤的左右鍵來移動，準備好就按下按鈕選擇你的職場靈獸人格吧！</p>
             </div>
             <img src="./image/player.png" alt="玩家" class="introduction-player">
         </div>
+        <button class="start-button" onclick="startGame()">準備好了開始遊戲！</button>
     </div>
     <div class="container" id="gameContainer" style="display: none;">
         <div class="map-container">
-            <div class="map" id="map">
-                <!-- 場景將通過JavaScript動態添加 -->
+            <div class="map">
+                <div class="road"></div>
+                <div class="player"></div>
+                <div>按X開始互動</div>
+                <div class="interaction-point"></div>
             </div>
         </div>
         <div class="dialog-container" id="dialogContainer">
@@ -43,4 +48,4 @@
     </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
